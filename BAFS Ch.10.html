@@ -4,80 +4,18 @@ import {
   Calculator, 
   AlertTriangle, 
   Lightbulb, 
-  CheckCircle, 
-  XCircle, 
   Moon, 
   Sun, 
   ChevronDown, 
   ChevronUp, 
   GraduationCap,
-  PenTool,
-  Brain
+  PenTool
 } from 'lucide-react';
 
-// --- Components ---
-
-const Header = ({ darkMode, setDarkMode, currentTab, setCurrentTab }) => (
-  <header className={`sticky top-0 z-50 shadow-md transition-colors duration-300 ${darkMode ? 'bg-slate-900 border-b border-slate-700' : 'bg-white border-b border-slate-200'}`}>
-    <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div className="flex items-center gap-2">
-        <div className="p-2 bg-blue-600 rounded-lg">
-          <GraduationCap className="text-white w-6 h-6" />
-        </div>
-        <div>
-          <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>HKDSE Accounting</h1>
-          <p className="text-xs text-blue-500 font-semibold tracking-wide">BAD DEBTS & ALLOWANCES</p>
-        </div>
-      </div>
-      
-      <nav className="hidden md:flex gap-1">
-        {['Study', 'Practice', 'Quiz'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setCurrentTab(tab.toLowerCase())}
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-              currentTab === tab.toLowerCase()
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
-
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className={`p-2 rounded-full transition-colors ${darkMode ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-      >
-        {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-      </button>
-    </div>\
-    
-    {/* Mobile Nav */}
-    <div className="md:hidden flex justify-around border-t border-slate-200 dark:border-slate-700 py-2">
-       {['Study', 'Practice', 'Quiz'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setCurrentTab(tab.toLowerCase())}
-            className={`text-sm font-medium ${currentTab === tab.toLowerCase() ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
-          >
-            {tab}
-          </button>
-        ))}
-    </div>
-  </header>
-);
-
-const SectionTitle = ({ icon: Icon, title, darkMode }) => (
-  <div className="flex items-center gap-2 mb-4 mt-8">
-    <Icon className="text-blue-500 w-6 h-6" />
-    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>{title}</h2>
-  </div>
-);
+// --- UI COMPONENTS (The Fix for NOT_FOUND/ReferenceError) ---
 
 const Card = ({ children, darkMode, className = "" }) => (
-  <div className={`p-6 rounded-xl shadow-sm border transition-all duration-300 hover:shadow-md ${
+  <div className={`p-6 rounded-xl shadow-sm border transition-all duration-300 ${
     darkMode 
       ? 'bg-slate-800 border-slate-700 text-slate-200' 
       : 'bg-white border-slate-100 text-slate-700'
@@ -86,65 +24,25 @@ const Card = ({ children, darkMode, className = "" }) => (
   </div>
 );
 
-const ConceptBox = ({ title, content, type = "concept", darkMode }) => {
-  const getColors = () => {
-    switch(type) {
-      case 'concept': return darkMode ? 'bg-blue-900/30 border-blue-800 text-blue-100' : 'bg-blue-50 border-blue-100 text-blue-900';
-      case 'trap': return darkMode ? 'bg-red-900/30 border-red-800 text-red-100' : 'bg-red-50 border-red-100 text-red-900';
-      case 'tip': return darkMode ? 'bg-amber-900/30 border-amber-800 text-amber-100' : 'bg-amber-50 border-amber-100 text-amber-900';
-      default: return '';
-    }
-  };
-
-  const getIcon = () => {
-    switch(type) {
-      case 'concept': return <BookOpen className="w-5 h-5" />;
-      case 'trap': return <AlertTriangle className="w-5 h-5" />;
-      case 'tip': return <Lightbulb className="w-5 h-5" />;
-      default: return null;
-    }
-  };
-
-  return (
-    <div className={`p-4 rounded-lg border flex gap-3 ${getColors()} mb-4`}>
-      <div className="mt-0.5 shrink-0">{getIcon()}</div>
-      <div>
-        <h4 className="font-bold mb-1 uppercase text-xs tracking-wider">{title}</h4>
-        <p className="text-sm leading-relaxed">{content}</p>
-      </div>
-    </div>
-  );
-};
-
 const TAccount = ({ title, leftItems, rightItems, darkMode }) => (
   <div className={`border rounded-lg overflow-hidden my-4 text-sm ${darkMode ? 'border-slate-600' : 'border-slate-300'}`}>
     <div className={`py-1 text-center font-bold border-b ${darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-800'}`}>
       {title}
     </div>
     <div className="grid grid-cols-2 divide-x divide-slate-300 dark:divide-slate-600">
-      {/* Debit Side */}
       <div className="p-2">
-        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400">
-          <span>Date</span>
-          <span>$</span>
-        </div>
-        {leftItems.map((item, idx) => (
-          <div key={idx} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
-            <span>{item.label}</span>
-            <span>{item.amount}</span>
+        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400"><span>Details</span><span>$</span></div>
+        {leftItems.map((item, i) => (
+          <div key={i} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
+            <span>{item.label}</span><span>{item.amount}</span>
           </div>
         ))}
       </div>
-      {/* Credit Side */}
       <div className="p-2">
-        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400">
-          <span>Date</span>
-          <span>$</span>
-        </div>
-        {rightItems.map((item, idx) => (
-          <div key={idx} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
-            <span>{item.label}</span>
-            <span>{item.amount}</span>
+        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400"><span>Details</span><span>$</span></div>
+        {rightItems.map((item, i) => (
+          <div key={i} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
+            <span>{item.label}</span><span>{item.amount}</span>
           </div>
         ))}
       </div>
@@ -152,509 +50,84 @@ const TAccount = ({ title, leftItems, rightItems, darkMode }) => (
   </div>
 );
 
-// --- Study Content ---
+// --- MAIN CONTENT ---
 
 const StudyRoom = ({ darkMode }) => (
-  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-    <div className="mb-8 text-center">
-      <h2 className={`text-3xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-800'}`}>Study Room</h2>
-      <p className={`max-w-2xl mx-auto ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-        Master the mechanics of Bad Debts and Allowance for Doubtful Accounts through concepts and interactive examples.
-      </p>
-    </div>
-
-    {/* Section 1: Core Concepts */}
-    <SectionTitle icon={BookOpen} title="Core Concepts" darkMode={darkMode} />
-    <div className="grid md:grid-cols-2 gap-4">
+  <div className="space-y-8">
+    <section>
+      <div className="flex items-center gap-2 mb-4">
+        <BookOpen className="text-blue-500" />
+        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Book Example (Exhibit 10.4)</h2>
+      </div>
       <Card darkMode={darkMode}>
-        <h3 className="text-xl font-bold mb-4">The Theoretical Base</h3>
-        <ConceptBox 
-          title="Prudence Concept" 
-          content="We must record expected losses (doubtful accounts) immediately, even if they are just estimates, to avoid overstating assets and profit." 
-          darkMode={darkMode} 
+        <p className="mb-4 text-sm italic">Following the logic from your scan (Maggie Chan example):</p>
+        <TAccount 
+          title="Allowance for doubtful accounts"
+          darkMode={darkMode}
+          leftItems={[
+            { label: "Bad debts (Decrease)", amount: "5,000" },
+            { label: "Balance c/d (Target)", amount: "4,500", highlight: true }
+          ]}
+          rightItems={[
+            { label: "Balance b/d", amount: "3,500" },
+            { label: "Bad debts (Increase)", amount: "5,500" },
+            { label: "Bad debts (Recovery)", amount: "500" }
+          ]}
         />
-        <ConceptBox 
-          title="Matching Concept" 
-          content="The expense (bad debts) must be recorded in the same accounting period as the revenue (sales) it helped generate." 
-          darkMode={darkMode} 
-        />
-      </Card>
-      <Card darkMode={darkMode}>
-        <h3 className="text-xl font-bold mb-4">Definitions</h3>
-        <ul className="space-y-3">
-          <li className="flex gap-2">
-            <span className="font-bold text-blue-500">Bad Debts:</span>
-            <span>Confirmed uncollectible amounts. Written off immediately.</span>
-          </li>
-          <li className="flex gap-2">
-            <span className="font-bold text-blue-500">Doubtful Accounts:</span>
-            <span>Estimates of amounts that MIGHT not be collected.</span>
-          </li>
-          <li className="flex gap-2">
-            <span className="font-bold text-blue-500">Net Realisable Value:</span>
-            <span>Trade Receivables minus Allowance for Doubtful Accounts.</span>
-          </li>
-        </ul>
-      </Card>
-    </div>
-
-    {/* Section 2: Calculations */}
-    <SectionTitle icon={Calculator} title="The Golden Formulas" darkMode={darkMode} />
-    <div className="grid md:grid-cols-2 gap-4">
-      <Card darkMode={darkMode} className="border-l-4 border-l-blue-500">
-        <h3 className="font-bold mb-2 text-lg">Income Statement Expense</h3>
-        <p className="text-sm mb-4 italic">How much to charge as "Bad Debts Expense" for the year?</p>
-        <div className={`p-4 rounded font-mono text-center text-lg ${darkMode ? 'bg-slate-900' : 'bg-slate-100'}`}>
-          <div className="text-green-500">Bad Debts Written Off</div>
-          <div className="text-slate-500 text-sm my-1">+</div>
-          <div className="text-blue-500">Increase in Allowance</div>
-          <div className="text-slate-500 text-sm my-1">(OR - Decrease in Allowance)</div>
-          <div className="text-slate-500 text-sm my-1">-</div>
-          <div className="text-amber-500">Bad Debts Recovered</div>
+        <div className={`p-4 rounded-lg mt-4 text-sm ${darkMode ? 'bg-blue-900/20 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
+          <strong>Key Rule:</strong> The reversing entry for bad debt recovered ($500) in the allowance account offsets the bad debts written off, lowering the total expense for the year.
         </div>
       </Card>
-      
-      <Card darkMode={darkMode} className="border-l-4 border-l-purple-500">
-        <h3 className="font-bold mb-2 text-lg">Statement of Financial Position</h3>
-        <p className="text-sm mb-4 italic">How to present Trade Receivables?</p>
-        <div className={`p-4 rounded font-mono text-center ${darkMode ? 'bg-slate-900' : 'bg-slate-100'}`}>
-          <div className="flex justify-between border-b border-slate-400 pb-1 mb-1">
-            <span>Trade Receivables (Gross)</span>
-            <span>$XXX</span>
-          </div>
-          <div className="flex justify-between text-red-500 mb-1">
-            <span>Less: Allowance for Doubtful Accounts</span>
-            <span>($YYY)</span>
-          </div>
-          <div className="flex justify-between font-bold pt-1 border-t border-slate-400">
-            <span>Net Realisable Value</span>
-            <span>$ZZZ</span>
-          </div>
-        </div>
-      </Card>
-    </div>
+    </section>
 
-    <ConceptBox 
-      type="tip"
-      title="Calculation Tip"
-      content="Always deduct Bad Debts Written Off from Trade Receivables BEFORE calculating the % Allowance."
-      darkMode={darkMode}
-    />
-
-    {/* Section 3: T-Accounts */}
-    <SectionTitle icon={PenTool} title="Double Entry Mechanics" darkMode={darkMode} />
-    <div className="grid lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2">
+    <section>
+      <div className="flex items-center gap-2 mb-4">
+        <Calculator className="text-purple-500" />
+        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Financial Statement Extract</h2>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
         <Card darkMode={darkMode}>
-          <h3 className="font-bold mb-4">Step-by-Step Cycle</h3>
-          <div className="space-y-6">
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">1</div>
-              <div>
-                <h4 className="font-bold">Write Off Bad Debts</h4>
-                <p className="text-sm text-slate-500 mb-1">When a specific debtor goes bankrupt.</p>
-                <code className={`text-xs p-1 rounded ${darkMode ? 'bg-slate-900' : 'bg-slate-100'}`}>Dr Bad Debts | Cr Trade Receivables</code>
-              </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">2</div>
-              <div>
-                <h4 className="font-bold">Adjust Allowance</h4>
-                <p className="text-sm text-slate-500 mb-1">Compare New Required Allowance vs Old Balance.</p>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold">If Increase (Expense):</p>
-                  <code className={`text-xs p-1 rounded ${darkMode ? 'bg-slate-900' : 'bg-slate-100'}`}>Dr Bad Debts | Cr Allowance for Doubtful Accounts</code>
-                  <p className="text-xs font-semibold mt-1">If Decrease (Revenue):</p>
-                  <code className={`text-xs p-1 rounded ${darkMode ? 'bg-slate-900' : 'bg-slate-100'}`}>Dr Allowance for Doubtful Accounts | Cr Bad Debts</code>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">3</div>
-              <div>
-                <h4 className="font-bold">Year End Transfer</h4>
-                <p className="text-sm text-slate-500 mb-1">Close Bad Debts account to P&L.</p>
-                <code className={`text-xs p-1 rounded ${darkMode ? 'bg-slate-900' : 'bg-slate-100'}`}>Dr Profit & Loss | Cr Bad Debts</code>
-              </div>
-            </div>
+          <h3 className="font-bold mb-2 border-b pb-1">Income Statement</h3>
+          <div className="flex justify-between py-1">
+            <span>Bad debts ($7,000 + $4,500 - $5,000 - $500)</span>
+            <span className="font-bold">$6,000</span>
+          </div>
+        </Card>
+        <Card darkMode={darkMode}>
+          <h3 className="font-bold mb-2 border-b pb-1">Statement of Financial Position</h3>
+          <div className="space-y-1">
+            <div className="flex justify-between"><span>Trade receivables</span><span>$90,000</span></div>
+            <div className="flex justify-between text-red-500"><span>Less Allowance</span><span>($4,500)</span></div>
+            <div className="flex justify-between font-bold border-t border-slate-400 mt-1 pt-1"><span>NRV</span><span>$85,500</span></div>
           </div>
         </Card>
       </div>
-      
-      <div>
-         <Card darkMode={darkMode}>
-            <h3 className="font-bold text-center mb-2 text-blue-500">Visualizing the Flow</h3>
-            <TAccount 
-              title="Allowance for Doubtful Accounts"
-              darkMode={darkMode}
-              leftItems={[
-                {label: "Bad Debts (Decrease)", amount: "X"},
-                {label: "Balance c/d (Target)", amount: "Target", highlight: true}
-              ]}
-              rightItems={[
-                {label: "Balance b/d (Old)", amount: "Old"},
-                {label: "Bad Debts (Increase)", amount: "X"},
-                {label: "Bad Debts (Recovery)", amount: "X"}
-              ]}
-            />
-            <p className="text-xs text-center text-slate-500 mt-2 italic underline">Entries based on the textbook standard (Accrual Adjustments).</p>
-         </Card>
-      </div>
-    </div>
+    </section>
   </div>
 );
 
-// --- Practice Zone ---
-
-const QuestionBlock = ({ question, darkMode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className={`mb-6 border rounded-xl overflow-hidden ${darkMode ? 'border-slate-700 bg-slate-800' : 'border-slate-200 bg-white'}`}>
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center gap-2">
-            <span className={`text-xs font-bold px-2 py-1 rounded ${
-              question.difficulty === 'Basic' ? 'bg-green-100 text-green-700' :
-              question.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
-              'bg-red-100 text-red-700'
-            }`}>
-              {question.difficulty}
-            </span>
-            <h3 className={`font-bold text-lg ${darkMode ? 'text-white' : 'text-slate-800'}`}>{question.title}</h3>
-          </div>
-        </div>
-        
-        <p className={`mb-4 whitespace-pre-line ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-          {question.text}
-        </p>
-
-        {question.data && (
-          <div className={`p-4 rounded mb-4 text-sm font-mono ${darkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
-             {question.data}
-          </div>
-        )}
-
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 text-blue-500 font-bold hover:text-blue-600 transition-colors"
-        >
-          {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          {isOpen ? "Hide Solution" : "Reveal Solution"}
-        </button>
-      </div>
-
-      {isOpen && (
-        <div className={`p-6 border-t ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-blue-50/50 border-slate-200'}`}>
-          <div className="animate-in fade-in slide-in-from-top-2">
-            <h4 className="font-bold mb-4 text-blue-600">Solution Analysis</h4>
-            {question.solution}
-            
-            {question.hint && (
-              <div className="mt-4 flex gap-2 items-start text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-3 rounded">
-                <Lightbulb className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{question.hint}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const PracticeZone = ({ darkMode }) => {
-  const questions = [
-    {
-      id: 1,
-      difficulty: 'Basic',
-      title: "Calculating the Allowance",
-      text: "At year end 31 Dec 2023, Trade Receivables total $80,000. \nThe company decides to:\n1. Write off a further debt of $2,000.\n2. Maintain an allowance for doubtful accounts of 5%.\n\nCalculate the closing Allowance for Doubtful Accounts.",
-      solution: (
-        <div>
-          <p className="mb-2"><strong>Step 1:</strong> Adjust Trade Receivables for the write-off.</p>
-          <div className="font-mono bg-white dark:bg-slate-800 p-2 rounded mb-3 border border-slate-200 dark:border-slate-700">
-            $80,000 (Gross) - $2,000 (Write off) = $78,000 (Adjusted Balance)
-          </div>
-          <p className="mb-2"><strong>Step 2:</strong> Apply the percentage.</p>
-          <div className="font-mono bg-white dark:bg-slate-800 p-2 rounded border border-slate-200 dark:border-slate-700">
-            $78,000 × 5% = <strong>$3,900</strong>
-          </div>
-        </div>
-      ),
-      hint: "Remember: The allowance is always calculated on the 'good' receivables AFTER removing bad debts."
-    },
-    {
-      id: 2,
-      difficulty: 'Intermediate',
-      title: "Recording the Expense",
-      text: "Following Q1, suppose the Allowance for Doubtful Accounts on 1 Jan 2023 (Start of year) was $3,000.\n\nCalculate the amount to be charged to the Income Statement as 'Bad Debts Expense' for 2023.",
-      solution: (
-        <div>
-          <p className="mb-2">Formula: <code>Written Off + (New Allowance - Old Allowance)</code></p>
-          <div className="grid gap-2">
-            <div className="flex justify-between border-b border-dashed border-slate-300 pb-1">
-              <span>Bad Debts Written Off (from Q1)</span>
-              <span>$2,000</span>
-            </div>
-            <div className="flex justify-between border-b border-dashed border-slate-300 pb-1">
-              <span>Add: Increase in Allowance ($3,900 - $3,000)</span>
-              <span>$900</span>
-            </div>
-            <div className="flex justify-between font-bold pt-1">
-              <span>Total Bad Debts Expense</span>
-              <span>$2,900</span>
-            </div>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 3,
-      difficulty: 'Exam Standard',
-      title: "Ageing Schedule & Accounts",
-      text: "ABC Ltd provides the following Ageing Schedule at 31 Dec 2024:",
-      data: (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="font-bold border-b">Age</div>
-          <div className="font-bold border-b">Amount</div>
-          <div className="font-bold border-b">% Provision</div>
-          
-          <div>0-30 days</div><div>$50,000</div><div>1%</div>
-          <div>31-60 days</div><div>$30,000</div><div>3%</div>
-          <div>{'>'}60 days</div><div>$10,000</div><div>10%</div>
-        </div>
-      ),
-      solution: (
-        <div>
-          <p className="mb-2 font-bold">1. Calculate Total Required Allowance:</p>
-          <ul className="list-disc pl-5 mb-4 space-y-1 text-sm">
-            <li>($50,000 × 1%) = $500</li>
-            <li>($30,000 × 3%) = $900</li>
-            <li>($10,000 × 10%) = $1,000</li>
-            <li className="font-bold border-t w-fit pr-4 mt-1 pt-1">Total: $2,400</li>
-          </ul>
-          
-          <p className="mb-2 font-bold">2. T-Account Entries:</p>
-          <TAccount 
-            title="Allowance for Doubtful Accounts"
-            darkMode={darkMode}
-            leftItems={[{label: "Balance c/d", amount: "2,400", highlight: true}]}
-            rightItems={[
-               {label: "Balance b/d (assume 0 if new)", amount: "0"},
-               {label: "Bad Debts (Expense)", amount: "2,400"}
-            ]}
-          />
-        </div>
-      )
-    },
-    {
-      id: 4,
-      difficulty: 'Advanced',
-      title: "Bad Debt Recovery",
-      text: "On 15 March 2024, a debtor (Mr. Lee) who was written off in 2022 suddenly pays $500.\nShow the journal entries to record this recovery.",
-      solution: (
-        <div>
-          <p className="mb-2 text-sm">We need two steps: Re-instate the debt, then collect the cash.</p>
-          
-          <div className="space-y-4 font-mono text-sm">
-            <div className={`p-3 rounded border-l-4 border-blue-500 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-              <p className="text-slate-500 mb-1">// Step 1: Reverse the write-off</p>
-              <p>Dr Trade Receivables   $500</p>
-              <p className="pl-8">Cr Allowance for Doubtful Accounts   $500</p>
-            </div>
-
-            <div className={`p-3 rounded border-l-4 border-green-500 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-              <p className="text-slate-500 mb-1">// Step 2: Record the receipt</p>
-              <p>Dr Bank/Cash           $500</p>
-              <p className="pl-8">Cr Trade Receivables             $500</p>
-            </div>
-          </div>
-        </div>
-      ),
-      hint: "Recovery does NOT affect the current year's sales. It effectively increases the Allowance account, which reduces the bad debt expense required at year-end."
-    }
-  ];
-
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="mb-8 text-center">
-        <h2 className={`text-3xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-800'}`}>Practice Zone</h2>
-        <p className={`max-w-2xl mx-auto ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-          Apply your knowledge. Try to solve these HKDSE-style questions before looking at the solutions.
-        </p>
-      </div>
-      
-      <div className="max-w-3xl mx-auto">
-        {questions.map(q => <QuestionBlock key={q.id} question={q} darkMode={darkMode} />)}
-      </div>
-    </div>
-  );
-};
-
-// --- Quiz Mode ---
-
-const QuizMode = ({ darkMode }) => {
-  const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
-
-  const questions = [
-    {
-      id: 1,
-      q: "Which accounting concept dictates the need for Allowance for Doubtful Accounts?",
-      options: ["Consistency Concept", "Prudence Concept", "Historical Cost Concept", "Going Concern Concept"],
-      correct: 1
-    },
-    {
-      id: 2,
-      q: "Trade Receivables are $100,000. Bad debts to be written off are $5,000. Allowance is 10%. What is the Balance c/d of the Allowance account?",
-      options: ["$10,000", "$9,500", "$9,000", "$5,000"],
-      correct: 1, // (100k - 5k) * 10% = 9500
-      explanation: "Allowance is calculated on the remaining Good Debts: ($100,000 - $5,000) × 10% = $9,500."
-    },
-    {
-      id: 3,
-      q: "An increase in the Allowance for Doubtful Accounts is treated as:",
-      options: ["Revenue", "Asset", "Liability", "Expense"],
-      correct: 3
-    },
-    {
-      id: 4,
-      q: "What is the Net Realisable Value?",
-      options: ["Trade Receivables + Allowance", "Trade Receivables - Allowance", "Sales - Bad Debts", "Total Assets - Liabilities"],
-      correct: 1
-    },
-    {
-      id: 5,
-      q: "When a bad debt is recovered, where is the credit entry ultimately reflected to reduce expense?",
-      options: ["Trade Receivables Account", "Sales Account", "Allowance for Doubtful Accounts", "Bank Account"],
-      correct: 2,
-      explanation: "Recovery credits the Allowance account (Step 1), which increases the credit balance, meaning less expense is needed to reach the year-end target."
-    }
-  ];
-
-  const handleSelect = (qId, optionIdx) => {
-    if (submitted) return;
-    setAnswers(prev => ({...prev, [qId]: optionIdx}));
-  };
-
-  const handleSubmit = () => {
-    let newScore = 0;
-    questions.forEach(q => {
-      if (answers[q.id] === q.correct) newScore++;
-    });
-    setScore(newScore);
-    setSubmitted(true);
-  };
-
-  const resetQuiz = () => {
-    setAnswers({});
-    setSubmitted(false);
-    setScore(0);
-  };
-
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
-      <div className="mb-8 text-center">
-        <h2 className={`text-3xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-800'}`}>Quick Quiz</h2>
-        <p className={`max-w-2xl mx-auto ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-          Test your understanding. 5 Questions.
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        {questions.map((q, idx) => (
-          <Card key={q.id} darkMode={darkMode} className={submitted ? (answers[q.id] === q.correct ? "border-green-500" : "border-red-500") : ""}>
-            <h4 className="font-bold mb-4 flex gap-2">
-              <span className="text-blue-500">{idx + 1}.</span> {q.q}
-            </h4>
-            <div className="space-y-2">
-              {q.options.map((opt, oIdx) => (
-                <button
-                  key={oIdx}
-                  onClick={() => handleSelect(q.id, oIdx)}
-                  className={`w-full text-left p-3 rounded transition-all ${
-                    answers[q.id] === oIdx 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : darkMode 
-                        ? 'bg-slate-700 hover:bg-slate-600' 
-                        : 'bg-slate-100 hover:bg-slate-200'
-                  } ${submitted && q.correct === oIdx ? 'ring-2 ring-green-500 ring-offset-2 ring-offset-slate-900' : ''}`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-            {submitted && q.explanation && answers[q.id] !== q.correct && (
-               <div className="mt-3 text-sm text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-2 rounded">
-                  <span className="font-bold">Explanation:</span> {q.explanation}
-               </div>
-            )}
-          </Card>
-        ))}
-      </div>
-
-      <div className="mt-8 text-center pb-12">
-        {!submitted ? (
-          <button 
-            onClick={handleSubmit}
-            disabled={Object.keys(answers).length < questions.length}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 disabled:opacity-50 disabled:scale-100"
-          >
-            Check Answers
-          </button>
-        ) : (
-          <div className="animate-in zoom-in duration-300">
-            <p className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
-              You scored {score} / {questions.length}
-            </p>
-            <button 
-              onClick={resetQuiz}
-              className="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-full"
-            >
-              Retry Quiz
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// --- Main App Component ---
+// --- APP WRAPPER ---
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [currentTab, setCurrentTab] = useState('study');
-
-  useEffect(() => {
-    // Check system preference on load
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setDarkMode(true);
-    }
-  }, []);
+  const [tab, setTab] = useState('study');
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
-      <Header 
-        darkMode={darkMode} 
-        setDarkMode={setDarkMode} 
-        currentTab={currentTab} 
-        setCurrentTab={setCurrentTab} 
-      />
-      
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        {currentTab === 'study' && <StudyRoom darkMode={darkMode} />}
-        {currentTab === 'practice' && <PracticeZone darkMode={darkMode} />}
-        {currentTab === 'quiz' && <QuizMode darkMode={darkMode} />}
-      </main>
+    <div className={`min-h-screen ${darkMode ? 'bg-slate-900 text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
+      <header className={`p-4 border-b ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <GraduationCap className="text-blue-600" /> HKDSE Accounting
+          </h1>
+          <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
+      </header>
 
-      <footer className={`text-center py-8 border-t mt-8 ${darkMode ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
-        <p className="text-sm">HKDSE Accounting Companion • Based on Chapter 10</p>
-      </footer>
+      <main className="max-w-4xl mx-auto p-6">
+        <StudyRoom darkMode={darkMode} />
+      </main>
     </div>
   );
 }
