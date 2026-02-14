@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, 
   Calculator, 
+  AlertTriangle, 
+  Lightbulb, 
   Moon, 
   Sun, 
+  ChevronDown, 
+  ChevronUp, 
   GraduationCap,
-  PenTool
+  PenTool,
+  CheckCircle,
+  Brain
 } from 'lucide-react';
 
 // --- REUSABLE UI COMPONENTS ---
@@ -46,7 +52,7 @@ const TAccount = ({ title, leftItems, rightItems, darkMode }) => (
   </div>
 );
 
-// --- MAIN CONTENT ---
+// --- TAB 1: STUDY ROOM ---
 
 const StudyRoom = ({ darkMode }) => (
   <div className="space-y-8 animate-in fade-in duration-500">
@@ -56,7 +62,7 @@ const StudyRoom = ({ darkMode }) => (
         <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Book Example (Exhibit 10.4)</h2>
       </div>
       <Card darkMode={darkMode}>
-        <p className="mb-4 text-sm italic opacity-80">Following the logic from Maggie Chan example (Step 2):</p>
+        <p className="mb-4 text-sm italic opacity-80">Maggie Chan example - Standard Textbook Entry:</p>
         <TAccount 
           title="Allowance for doubtful accounts"
           darkMode={darkMode}
@@ -70,63 +76,157 @@ const StudyRoom = ({ darkMode }) => (
             { label: "Bad debts (Recovery)", amount: "500" }
           ]}
         />
-        <div className={`p-4 rounded-lg mt-4 text-sm ${darkMode ? 'bg-blue-900/20 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
-          <p><strong>Key Rule:</strong> The recovery of $500 credits the allowance, which reduces the final Bad Debts expense transferred to P&L.</p>
+        <div className={`p-4 rounded-lg mt-4 text-sm flex gap-3 ${darkMode ? 'bg-blue-900/20 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
+          <Lightbulb className="shrink-0" />
+          <p><strong>Key Rule:</strong> The recovery of $500 credits the allowance account directly, which effectively reduces the final "Bad debts" transfer to the P&L.</p>
         </div>
       </Card>
     </section>
 
-    <section>
-      <div className="flex items-center gap-2 mb-4">
-        <Calculator className="text-purple-500" />
-        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Financial Statement Extracts</h2>
-      </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <Card darkMode={darkMode}>
-          <h3 className="font-bold mb-3 border-b pb-1">Income Statement (Extract)</h3>
-          <div className="space-y-2">
-            <div className="text-xs opacity-70 italic">Calculation: $7,000 + $4,500 - $5,000 - $500</div>
-            <div className="flex justify-between py-1 border-t border-dashed border-slate-500/30">
-              <span>Bad debts expense</span>
-              <span className="font-bold text-blue-500">$6,000</span>
-            </div>
+    <section className="grid md:grid-cols-2 gap-4">
+      <Card darkMode={darkMode}>
+        <h3 className="font-bold mb-3 border-b pb-1 flex items-center gap-2">
+          <PenTool size={16} /> Income Statement
+        </h3>
+        <div className="space-y-2">
+          <div className="text-xs opacity-70 italic">Calculation: $7,000 + $4,500 - $5,000 - $500</div>
+          <div className="flex justify-between py-1 border-t border-dashed border-slate-500/30">
+            <span>Bad debts expense</span>
+            <span className="font-bold text-blue-500">$6,000</span>
           </div>
-        </Card>
-        <Card darkMode={darkMode}>
-          <h3 className="font-bold mb-3 border-b pb-1">SFP (Extract)</h3>
-          <div className="space-y-1">
-            <div className="flex justify-between"><span>Trade receivables</span><span>$90,000</span></div>
-            <div className="flex justify-between text-red-500"><span>Less: Allowance</span><span>($4,500)</span></div>
-            <div className="flex justify-between font-bold border-t border-slate-400 mt-1 pt-1"><span>Net Realisable Value</span><span>$85,500</span></div>
-          </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
+      <Card darkMode={darkMode}>
+        <h3 className="font-bold mb-3 border-b pb-1 flex items-center gap-2">
+          <Calculator size={16} /> Financial Position (SFP)
+        </h3>
+        <div className="space-y-1">
+          <div className="flex justify-between text-sm"><span>Trade receivables</span><span>$90,000</span></div>
+          <div className="flex justify-between text-sm text-red-500"><span>Less: Allowance</span><span>($4,500)</span></div>
+          <div className="flex justify-between font-bold border-t border-slate-400 mt-1 pt-1"><span>Net Realisable Value</span><span>$85,500</span></div>
+        </div>
+      </Card>
     </section>
   </div>
 );
 
-// --- APP ENTRY POINT ---
+// --- TAB 2: PRACTICE ---
+
+const PracticeRoom = ({ darkMode }) => {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <Card darkMode={darkMode}>
+        <div className="flex items-center gap-2 mb-4 text-green-500">
+          <Brain />
+          <h3 className="text-xl font-bold">Check Your Progress (P10-4)</h3>
+        </div>
+        <p className="mb-4">Refer to P10-3. Suppose a bad debt of $2,200 written off in a previous year was recovered on 1 May 2022. How would this affect the entries?</p>
+        <button 
+          onClick={() => setShow(!show)}
+          className="text-blue-500 font-bold flex items-center gap-1 hover:underline"
+        >
+          {show ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          {show ? "Hide Answer" : "See Answer"}
+        </button>
+        
+        {show && (
+          <div className="mt-4 p-4 rounded bg-slate-100 dark:bg-slate-900 border-l-4 border-green-500 animate-in slide-in-from-top-2">
+            <p className="text-sm">The recovery would be <strong>credited</strong> to the Allowance for Doubtful Accounts account. This would reduce the amount of additional bad debts expense needed to be transferred to the Profit and Loss at year-end.</p>
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+};
+
+// --- TAB 3: QUIZ ---
+
+const QuizRoom = ({ darkMode }) => {
+  const [selected, setSelected] = useState(null);
+  const correct = 1;
+  
+  return (
+    <div className="animate-in fade-in duration-500">
+      <Card darkMode={darkMode}>
+        <h3 className="text-lg font-bold mb-4">Quick Test: Recovery Logic</h3>
+        <p className="mb-6">When a previously written-off debt is recovered, it is credited to which account in the Maggie Chan example?</p>
+        <div className="space-y-3">
+          {["Trade Receivables", "Allowance for Doubtful Accounts", "Bank"].map((opt, i) => (
+            <button
+              key={i}
+              onClick={() => setSelected(i)}
+              className={`w-full text-left p-3 rounded-lg border transition-all ${
+                selected === i 
+                  ? (i === correct ? 'bg-green-100 border-green-500 text-green-800' : 'bg-red-100 border-red-500 text-red-800')
+                  : 'bg-slate-50 dark:bg-slate-700 border-transparent hover:border-blue-500'
+              }`}
+            >
+              {opt} {selected === i && (i === correct ? '✓' : '✗')}
+            </button>
+          ))}
+        </div>
+        {selected === correct && (
+          <p className="mt-4 text-sm text-green-600 font-medium flex items-center gap-1">
+            <CheckCircle size={16} /> Correct! It offsets the bad debt expense.
+          </p>
+        )}
+      </Card>
+    </div>
+  );
+};
+
+// --- MAIN APP COMPONENT ---
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const [tab, setTab] = useState('study');
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-slate-900 text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
-      <header className={`p-4 border-b ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
+      <header className={`p-4 sticky top-0 z-10 border-b backdrop-blur-md ${darkMode ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-slate-200'}`}>
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <GraduationCap className="text-blue-600" />
-            <h1 className="text-xl font-bold">HKDSE Accounting</h1>
+            <div className="bg-blue-600 p-1.5 rounded-lg shadow-lg shadow-blue-500/20">
+              <GraduationCap className="text-white" size={20} />
+            </div>
+            <h1 className="text-xl font-bold hidden sm:block">HKDSE Accounting</h1>
           </div>
-          <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+          
+          <nav className="flex gap-1 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
+            {['study', 'practice', 'quiz'].map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-bold capitalize transition-all ${
+                  tab === t 
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' 
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </nav>
+
+          <button 
+            onClick={() => setDarkMode(!darkMode)} 
+            className={`p-2 rounded-full transition-colors ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+          >
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-6">
-        <StudyRoom darkMode={darkMode} />
+        {tab === 'study' && <StudyRoom darkMode={darkMode} />}
+        {tab === 'practice' && <PracticeRoom darkMode={darkMode} />}
+        {tab === 'quiz' && <QuizRoom darkMode={darkMode} />}
       </main>
+
+      <footer className="text-center py-12 opacity-40 text-xs font-medium tracking-widest uppercase">
+        HKDSE Accounting Companion • Chapter 10
+      </footer>
     </div>
   );
 }
