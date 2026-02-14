@@ -1,133 +1,142 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  BookOpen, 
-  Calculator, 
-  AlertTriangle, 
-  Lightbulb, 
-  Moon, 
-  Sun, 
-  ChevronDown, 
-  ChevronUp, 
-  GraduationCap,
-  PenTool
-} from 'lucide-react';
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HKDSE Accounting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-// --- UI COMPONENTS (The Fix for NOT_FOUND/ReferenceError) ---
+<body class="bg-slate-50 text-slate-700 min-h-screen">
 
-const Card = ({ children, darkMode, className = "" }) => (
-  <div className={`p-6 rounded-xl shadow-sm border transition-all duration-300 ${
-    darkMode 
-      ? 'bg-slate-800 border-slate-700 text-slate-200' 
-      : 'bg-white border-slate-100 text-slate-700'
-  } ${className}`}>
-    {children}
-  </div>
-);
-
-const TAccount = ({ title, leftItems, rightItems, darkMode }) => (
-  <div className={`border rounded-lg overflow-hidden my-4 text-sm ${darkMode ? 'border-slate-600' : 'border-slate-300'}`}>
-    <div className={`py-1 text-center font-bold border-b ${darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-800'}`}>
-      {title}
+  <!-- Header -->
+  <header class="p-4 border-b bg-white">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">
+        🎓 HKDSE Accounting
+      </h1>
+      <button onclick="toggleDarkMode()" 
+        class="p-2 rounded hover:bg-slate-200">
+        🌙
+      </button>
     </div>
-    <div className="grid grid-cols-2 divide-x divide-slate-300 dark:divide-slate-600">
-      <div className="p-2">
-        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400"><span>Details</span><span>$</span></div>
-        {leftItems.map((item, i) => (
-          <div key={i} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
-            <span>{item.label}</span><span>{item.amount}</span>
-          </div>
-        ))}
-      </div>
-      <div className="p-2">
-        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400"><span>Details</span><span>$</span></div>
-        {rightItems.map((item, i) => (
-          <div key={i} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
-            <span>{item.label}</span><span>{item.amount}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
+  </header>
 
-// --- MAIN CONTENT ---
+  <main class="max-w-4xl mx-auto p-6 space-y-8">
 
-const StudyRoom = ({ darkMode }) => (
-  <div className="space-y-8">
+    <!-- Book Example -->
     <section>
-      <div className="flex items-center gap-2 mb-4">
-        <BookOpen className="text-blue-500" />
-        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Book Example (Exhibit 10.4)</h2>
-      </div>
-      <Card darkMode={darkMode}>
-        <p className="mb-4 text-sm italic">Following the logic from your scan (Maggie Chan example):</p>
-        <TAccount 
-          title="Allowance for doubtful accounts"
-          darkMode={darkMode}
-          leftItems={[
-            { label: "Bad debts (Decrease)", amount: "5,000" },
-            { label: "Balance c/d (Target)", amount: "4,500", highlight: true }
-          ]}
-          rightItems={[
-            { label: "Balance b/d", amount: "3,500" },
-            { label: "Bad debts (Increase)", amount: "5,500" },
-            { label: "Bad debts (Recovery)", amount: "500" }
-          ]}
-        />
-        <div className={`p-4 rounded-lg mt-4 text-sm ${darkMode ? 'bg-blue-900/20 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
-          <strong>Key Rule:</strong> The reversing entry for bad debt recovered ($500) in the allowance account offsets the bad debts written off, lowering the total expense for the year.
+      <h2 class="text-2xl font-bold mb-4">
+        📘 Book Example (Exhibit 10.4)
+      </h2>
+
+      <div class="bg-white p-6 rounded-xl shadow border">
+
+        <p class="mb-4 text-sm italic">
+          Following the logic from your scan (Maggie Chan example):
+        </p>
+
+        <!-- T Account -->
+        <div class="border rounded-lg overflow-hidden text-sm">
+
+          <div class="bg-slate-100 text-center font-bold py-2 border-b">
+            Allowance for Doubtful Accounts
+          </div>
+
+          <div class="grid grid-cols-2">
+
+            <!-- Left -->
+            <div class="p-3 border-r">
+              <div class="flex justify-between font-bold mb-2 text-xs text-slate-400">
+                <span>Details</span><span>$</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Bad debts (Decrease)</span><span>5,000</span>
+              </div>
+              <div class="flex justify-between font-bold text-blue-600">
+                <span>Balance c/d (Target)</span><span>4,500</span>
+              </div>
+            </div>
+
+            <!-- Right -->
+            <div class="p-3">
+              <div class="flex justify-between font-bold mb-2 text-xs text-slate-400">
+                <span>Details</span><span>$</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Balance b/d</span><span>3,500</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Bad debts (Increase)</span><span>5,500</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Bad debts (Recovery)</span><span>500</span>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </Card>
+
+        <div class="mt-4 p-4 rounded bg-blue-50 text-blue-800 text-sm">
+          <strong>Key Rule:</strong>
+          The reversing entry for bad debt recovered ($500)
+          offsets the bad debts written off,
+          lowering total expense for the year.
+        </div>
+
+      </div>
     </section>
 
+    <!-- Financial Statement -->
     <section>
-      <div className="flex items-center gap-2 mb-4">
-        <Calculator className="text-purple-500" />
-        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Financial Statement Extract</h2>
-      </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <Card darkMode={darkMode}>
-          <h3 className="font-bold mb-2 border-b pb-1">Income Statement</h3>
-          <div className="flex justify-between py-1">
+
+      <h2 class="text-2xl font-bold mb-4">
+        🧮 Financial Statement Extract
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- Income Statement -->
+        <div class="bg-white p-6 rounded-xl shadow border">
+          <h3 class="font-bold mb-2 border-b pb-1">
+            Income Statement
+          </h3>
+          <div class="flex justify-between">
             <span>Bad debts ($7,000 + $4,500 - $5,000 - $500)</span>
-            <span className="font-bold">$6,000</span>
+            <span class="font-bold">$6,000</span>
           </div>
-        </Card>
-        <Card darkMode={darkMode}>
-          <h3 className="font-bold mb-2 border-b pb-1">Statement of Financial Position</h3>
-          <div className="space-y-1">
-            <div className="flex justify-between"><span>Trade receivables</span><span>$90,000</span></div>
-            <div className="flex justify-between text-red-500"><span>Less Allowance</span><span>($4,500)</span></div>
-            <div className="flex justify-between font-bold border-t border-slate-400 mt-1 pt-1"><span>NRV</span><span>$85,500</span></div>
-          </div>
-        </Card>
-      </div>
-    </section>
-  </div>
-);
-
-// --- APP WRAPPER ---
-
-export default function App() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [tab, setTab] = useState('study');
-
-  return (
-    <div className={`min-h-screen ${darkMode ? 'bg-slate-900 text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
-      <header className={`p-4 border-b ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <GraduationCap className="text-blue-600" /> HKDSE Accounting
-          </h1>
-          <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
         </div>
-      </header>
 
-      <main className="max-w-4xl mx-auto p-6">
-        <StudyRoom darkMode={darkMode} />
-      </main>
-    </div>
-  );
-}
+        <!-- Statement of Financial Position -->
+        <div class="bg-white p-6 rounded-xl shadow border">
+          <h3 class="font-bold mb-2 border-b pb-1">
+            Statement of Financial Position
+          </h3>
+
+          <div class="space-y-1">
+            <div class="flex justify-between">
+              <span>Trade receivables</span><span>$90,000</span>
+            </div>
+            <div class="flex justify-between text-red-500">
+              <span>Less Allowance</span><span>($4,500)</span>
+            </div>
+            <div class="flex justify-between font-bold border-t mt-2 pt-2">
+              <span>NRV</span><span>$85,500</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("bg-slate-900");
+      document.body.classList.toggle("text-slate-200");
+    }
+  </script>
+
+</body>
+</html>
