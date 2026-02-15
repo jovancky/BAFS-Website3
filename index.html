@@ -79,33 +79,33 @@
 
         const concepts = [
             {
-                title: "Bad Debts (Irrecoverable)",
-                icon: "file-warning",
-                desc: "Debts that are definitely uncollectible (e.g., customer bankruptcy). They are written off immediately.",
+                title: "Bad Debts Flow",
+                icon: "refresh-cw",
+                desc: "1. Write-offs go to Allowance Account first. <br>2. Net movement transfers to Bad Debts Account. <br>3. Bad Debts Account closes to P&L.",
                 keyPoints: [
-                    "Expenses Increase (Dr)",
-                    "Assets (Receivables) Decrease (Cr)",
-                    "Reduces Net Profit"
+                    "Dr Allowance, Cr Receivables (Write-off)",
+                    "Dr Bad Debts, Cr Allowance (Total Expense)",
+                    "Dr P&L, Cr Bad Debts (Closing)"
                 ]
             },
             {
                 title: "Allowance for Doubtful Accounts",
                 icon: "piggy-bank",
-                desc: "An estimate of future bad debts based on the Prudence Concept. We anticipate losses before they occur.",
+                desc: "An estimate of future bad debts based on the Prudence Concept. It acts as the central hub for all write-offs and adjustments.",
                 keyPoints: [
                     "Contra-Asset Account (Reduces Asset value)",
-                    "Created to match revenue with likely expenses (Matching Principle)",
-                    "Does not involve cash flow"
+                    "Holds both Write-offs and Estimates",
+                    "Net change is the expense for the year"
                 ]
             },
             {
                 title: "Recovery of Bad Debts",
                 icon: "undo-2",
-                desc: "When a customer pays AFTER we already wrote off their debt. We must reverse the write-off first.",
+                desc: "When a customer pays AFTER write-off. We reverse the write-off in the Allowance account.",
                 keyPoints: [
-                    "Reinstating the receivable",
-                    "Recording the cash receipt",
-                    "Increases Net Profit"
+                    "Dr Receivables, Cr Allowance (Reinstate)",
+                    "Dr Bank, Cr Receivables (Payment)",
+                    "Reduces the Bad Debt Expense for the year"
                 ]
             }
         ];
@@ -114,26 +114,35 @@
             {
                 id: 'ex1',
                 title: "Writing off a Bad Debt",
-                scenario: "A customer, Mr. Lee, owes $6,000. He is declared bankrupt and cannot pay. We must write off the debt.",
+                scenario: "A customer, Mr. Lee, owes $6,000. He is declared bankrupt. We write off the debt using the Allowance method.",
                 impact: {
                     profit: "Net Profit ↓",
                     assets: "Assets (Receivables) ↓",
                     equity: "Capital ↓"
                 },
                 journal: [
-                    { dr: "Bad Debts Expense", cr: "", amt: "6,000" },
-                    { dr: "", cr: "Trade Receivables (Mr. Lee)", amt: "6,000" }
+                    { dr: "Allowance for Doubtful Accounts", cr: "", amt: "6,000", note: "(1) Write off debt" },
+                    { dr: "", cr: "Trade Receivables (Mr. Lee)", amt: "6,000" },
+                    { dr: "Bad Debts", cr: "", amt: "6,000", note: "(2) Transfer to Bad Debts" },
+                    { dr: "", cr: "Allowance for Doubtful Accounts", amt: "6,000" },
+                    { dr: "Profit & Loss", cr: "", amt: "6,000", note: "(3) Close to P&L" },
+                    { dr: "", cr: "Bad Debts", amt: "6,000" }
                 ],
                 tAccounts: [
                     { 
-                        name: "Bad Debts (Expense)", 
+                        name: "Allowance for Doubtful Accounts", 
                         left: [{ desc: "Trade Receivables", amt: 6000 }], 
+                        right: [{ desc: "Bad Debts", amt: 6000 }] 
+                    },
+                    { 
+                        name: "Bad Debts", 
+                        left: [{ desc: "Allowance for D.A.", amt: 6000 }], 
                         right: [{ desc: "Profit & Loss", amt: 6000 }] 
                     },
                     { 
                         name: "Trade Receivables", 
                         left: [{ desc: "Balance b/d", amt: 6000 }], 
-                        right: [{ desc: "Bad Debts", amt: 6000 }] 
+                        right: [{ desc: "Allowance for D.A.", amt: 6000 }] 
                     }
                 ],
                 fs: {
@@ -143,44 +152,48 @@
                     ],
                     sofp: [
                         { label: "Current Assets:", isHeader: true },
-                        { label: "Trade Receivables", val: "0" }
+                        { label: "Trade Receivables", val: "0" },
+                        { label: "&nbsp;&nbsp;Less: Allowance for doubtful account", val: "(0)" },
+                        { label: "Net Receivables", val: "0", isTotal: true }
                     ]
                 }
             },
             {
                 id: 'ex2',
                 title: "Creating Allowance (Year End)",
-                scenario: "Maggie Chan has Trade Receivables of $90,000 at year end 2024. She decides to create an allowance of 5% ($4,500).",
+                scenario: "Maggie Chan has Trade Receivables of $90,000. She creates an allowance of 5% ($4,500).",
                 impact: {
                     profit: "Net Profit ↓ (Expense increases)",
                     assets: "Net Realisable Value ↓",
                     equity: "Capital ↓"
                 },
                 journal: [
-                    { dr: "Profit & Loss (Bad Debts Exp)", cr: "", amt: "4,500" },
-                    { dr: "", cr: "Allowance for Doubtful Accounts", amt: "4,500" }
+                    { dr: "Bad Debts", cr: "", amt: "4,500", note: "(1) Increase Allowance" },
+                    { dr: "", cr: "Allowance for Doubtful Accounts", amt: "4,500" },
+                    { dr: "Profit & Loss", cr: "", amt: "4,500", note: "(2) Close expense" },
+                    { dr: "", cr: "Bad Debts", amt: "4,500" }
                 ],
                 tAccounts: [
                     { 
-                        name: "Bad Debts Expense", 
+                        name: "Bad Debts", 
                         left: [{ desc: "Allowance for D.A.", amt: 4500 }], 
                         right: [{ desc: "Profit & Loss", amt: 4500 }] 
                     },
                     { 
                         name: "Allowance for Doubtful Accounts", 
                         left: [{ desc: "Balance c/d", amt: 4500 }], 
-                        right: [{ desc: "Bad Debts (P&L)", amt: 4500 }] 
+                        right: [{ desc: "Bad Debts", amt: 4500 }] 
                     }
                 ],
                 fs: {
                     income: [
                         { label: "Expenses:", isHeader: true },
-                        { label: "Increase in Allowance", val: "4,500" }
+                        { label: "Bad Debts", val: "4,500" }
                     ],
                     sofp: [
                         { label: "Current Assets:", isHeader: true },
                         { label: "Trade Receivables", val: "90,000" },
-                        { label: "Less: Allowance for D.A.", val: "(4,500)" },
+                        { label: "&nbsp;&nbsp;Less: Allowance for doubtful account", val: "(4,500)" },
                         { label: "Net Receivables", val: "85,500", isTotal: true }
                     ]
                 }
@@ -188,38 +201,40 @@
             {
                 id: 'ex3',
                 title: "Recovery of Written-off Debt",
-                scenario: "A debt of $2,200 previously written off was unexpectedly recovered and paid by cheque.",
+                scenario: "A debt of $2,200 previously written off was recovered. We reinstate it through the Allowance account first.",
                 impact: {
                     profit: "Net Profit ↑",
                     assets: "Cash ↑",
                     equity: "Capital ↑"
                 },
                 journal: [
-                    { dr: "Trade Receivables", cr: "", amt: "2,200", note: "(1) Reinstate debt" },
-                    { dr: "", cr: "Bad Debts Recovered", amt: "2,200" },
+                    { dr: "Trade Receivables", cr: "", amt: "2,200", note: "(1) Reinstate to Allowance" },
+                    { dr: "", cr: "Allowance for Doubtful Accounts", amt: "2,200" },
                     { dr: "Bank", cr: "", amt: "2,200", note: "(2) Receive money" },
                     { dr: "", cr: "Trade Receivables", amt: "2,200" }
                 ],
                 tAccounts: [
                     { 
                         name: "Trade Receivables", 
-                        left: [{ desc: "Bad Debts Recovered", amt: 2200 }], 
+                        left: [{ desc: "Allowance for D.A.", amt: 2200 }], 
                         right: [{ desc: "Bank", amt: 2200 }] 
                     },
                     { 
-                        name: "Bad Debts Recovered (Income)", 
-                        left: [{ desc: "Profit & Loss", amt: 2200 }], 
+                        name: "Allowance for Doubtful Accounts", 
+                        left: [], 
                         right: [{ desc: "Trade Receivables", amt: 2200 }] 
                     }
                 ],
                 fs: {
                     income: [
-                        { label: "Other Income:", isHeader: true },
-                        { label: "Bad Debts Recovered", val: "2,200" }
+                        { label: "Expenses:", isHeader: true },
+                        { label: "Bad Debts (Reduced by recovery)", val: "(2,200)" }
                     ],
                     sofp: [
                         { label: "Current Assets:", isHeader: true },
-                        { label: "Bank balance increased by", val: "2,200" }
+                        { label: "Bank balance increased by", val: "2,200" },
+                        { label: "Trade Receivables", val: "No Change" },
+                        { label: "&nbsp;&nbsp;Less: Allowance for doubtful account", val: "(Adjusted)" }
                     ]
                 }
             }
@@ -227,24 +242,24 @@
 
         const quizData = [
             {
-                question: "Transaction: Written off a debtor, Mr. Wong, who owes $1,500.",
+                question: "Transaction: Written off a debtor, Mr. Wong, who owes $1,500 (Use Allowance method).",
                 correct: [
-                    { type: 'dr', account: ['Bad Debts', 'Bad Debts Expense'], amount: 1500 },
+                    { type: 'dr', account: ['Allowance for Doubtful Accounts', 'Allowance for bad debts'], amount: 1500 },
                     { type: 'cr', account: ['Trade Receivables', 'Mr Wong', 'Mr. Wong'], amount: 1500 }
                 ]
             },
             {
-                question: "Transaction: Increase the Allowance for Doubtful Accounts by $400 at year end.",
+                question: "Transaction: Transfer total bad debt expense of $400 to the Bad Debts account.",
                 correct: [
-                    { type: 'dr', account: ['Profit and Loss', 'Bad Debts Expense', 'Income Statement'], amount: 400 },
+                    { type: 'dr', account: ['Bad Debts'], amount: 400 },
                     { type: 'cr', account: ['Allowance for Doubtful Accounts', 'Allowance for bad debts'], amount: 400 }
                 ]
             },
             {
-                question: "Transaction: Receive cash $500 for a debt written off last year (Step 1: Reinstating entry only).",
+                question: "Transaction: Reinstating a recovered debt of $500 (Reverse previous write-off).",
                 correct: [
                     { type: 'dr', account: ['Trade Receivables', 'Debtor'], amount: 500 },
-                    { type: 'cr', account: ['Bad Debts Recovered', 'Bad Debts'], amount: 500 }
+                    { type: 'cr', account: ['Allowance for Doubtful Accounts', 'Allowance for bad debts'], amount: 500 }
                 ]
             }
         ];
@@ -298,7 +313,7 @@
                         </div>
                         <p class="text-gray-600 mb-4 h-20">${c.desc}</p>
                         <div class="bg-gray-100 p-3 rounded-lg text-sm">
-                            <p class="font-semibold text-gray-700 mb-2">Effects:</p>
+                            <p class="font-semibold text-gray-700 mb-2">Key Points:</p>
                             <ul class="space-y-1">
                                 ${c.keyPoints.map(k => `<li class="flex items-start"><span class="mr-2 text-indigo-500">•</span>${k}</li>`).join('')}
                             </ul>
@@ -440,7 +455,7 @@
                 const borderClass = row.isTotal ? 'border-t border-gray-400 pt-1 font-bold' : '';
                 sofpHtml += `
                     <div class="flex justify-between ${row.isHeader ? 'font-bold text-gray-800 mt-3' : 'text-gray-700'} ${borderClass}">
-                        <span>${row.label}</span>
+                        <span class="${row.label.includes('Less:') ? 'text-red-700 italic' : ''}">${row.label}</span>
                         <span>${row.val || ''}</span>
                     </div>
                 `;
