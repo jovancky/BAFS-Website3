@@ -1,232 +1,557 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  BookOpen, 
-  Calculator, 
-  AlertTriangle, 
-  Lightbulb, 
-  Moon, 
-  Sun, 
-  ChevronDown, 
-  ChevronUp, 
-  GraduationCap,
-  PenTool,
-  CheckCircle,
-  Brain
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Debts & Allowance Study App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-// --- REUSABLE UI COMPONENTS ---
-
-const Card = ({ children, darkMode, className = "" }) => (
-  <div className={`p-6 rounded-xl shadow-sm border transition-all duration-300 ${
-    darkMode 
-      ? 'bg-slate-800 border-slate-700 text-slate-200' 
-      : 'bg-white border-slate-100 text-slate-700'
-  } ${className}`}>
-    {children}
-  </div>
-);
-
-const TAccount = ({ title, leftItems, rightItems, darkMode }) => (
-  <div className={`border rounded-lg overflow-hidden my-4 text-sm ${darkMode ? 'border-slate-600' : 'border-slate-300'}`}>
-    <div className={`py-1 text-center font-bold border-b ${darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-800'}`}>
-      {title}
-    </div>
-    <div className="grid grid-cols-2 divide-x divide-slate-300 dark:divide-slate-600">
-      <div className="p-2">
-        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400"><span>Details</span><span>$</span></div>
-        {leftItems.map((item, i) => (
-          <div key={i} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
-            <span>{item.label}</span><span>{item.amount}</span>
-          </div>
-        ))}
-      </div>
-      <div className="p-2">
-        <div className="flex justify-between font-bold mb-2 text-xs text-slate-400"><span>Details</span><span>$</span></div>
-        {rightItems.map((item, i) => (
-          <div key={i} className={`flex justify-between mb-1 ${item.highlight ? 'text-blue-500 font-bold' : ''}`}>
-            <span>{item.label}</span><span>{item.amount}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-// --- TAB 1: STUDY ROOM ---
-
-const StudyRoom = ({ darkMode }) => (
-  <div className="space-y-8 animate-in fade-in duration-500">
-    <section>
-      <div className="flex items-center gap-2 mb-4">
-        <BookOpen className="text-blue-500" />
-        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>Book Example (Exhibit 10.4)</h2>
-      </div>
-      <Card darkMode={darkMode}>
-        <p className="mb-4 text-sm italic opacity-80">Maggie Chan example - Standard Textbook Entry:</p>
-        <TAccount 
-          title="Allowance for doubtful accounts"
-          darkMode={darkMode}
-          leftItems={[
-            { label: "Bad debts (Decrease)", amount: "5,000" },
-            { label: "Balance c/d (Target)", amount: "4,500", highlight: true }
-          ]}
-          rightItems={[
-            { label: "Balance b/d", amount: "3,500" },
-            { label: "Bad debts (Increase)", amount: "5,500" },
-            { label: "Bad debts (Recovery)", amount: "500" }
-          ]}
-        />
-        <div className={`p-4 rounded-lg mt-4 text-sm flex gap-3 ${darkMode ? 'bg-blue-900/20 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
-          <Lightbulb className="shrink-0" />
-          <p><strong>Key Rule:</strong> The recovery of $500 credits the allowance account directly, which effectively reduces the final "Bad debts" transfer to the P&L.</p>
-        </div>
-      </Card>
-    </section>
-
-    <section className="grid md:grid-cols-2 gap-4">
-      <Card darkMode={darkMode}>
-        <h3 className="font-bold mb-3 border-b pb-1 flex items-center gap-2">
-          <PenTool size={16} /> Income Statement
-        </h3>
-        <div className="space-y-2">
-          <div className="text-xs opacity-70 italic">Calculation: $7,000 + $4,500 - $5,000 - $500</div>
-          <div className="flex justify-between py-1 border-t border-dashed border-slate-500/30">
-            <span>Bad debts expense</span>
-            <span className="font-bold text-blue-500">$6,000</span>
-          </div>
-        </div>
-      </Card>
-      <Card darkMode={darkMode}>
-        <h3 className="font-bold mb-3 border-b pb-1 flex items-center gap-2">
-          <Calculator size={16} /> Financial Position (SFP)
-        </h3>
-        <div className="space-y-1">
-          <div className="flex justify-between text-sm"><span>Trade receivables</span><span>$90,000</span></div>
-          <div className="flex justify-between text-sm text-red-500"><span>Less: Allowance</span><span>($4,500)</span></div>
-          <div className="flex justify-between font-bold border-t border-slate-400 mt-1 pt-1"><span>Net Realisable Value</span><span>$85,500</span></div>
-        </div>
-      </Card>
-    </section>
-  </div>
-);
-
-// --- TAB 2: PRACTICE ---
-
-const PracticeRoom = ({ darkMode }) => {
-  const [show, setShow] = useState(false);
-  return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <Card darkMode={darkMode}>
-        <div className="flex items-center gap-2 mb-4 text-green-500">
-          <Brain />
-          <h3 className="text-xl font-bold">Check Your Progress (P10-4)</h3>
-        </div>
-        <p className="mb-4">Refer to P10-3. Suppose a bad debt of $2,200 written off in a previous year was recovered on 1 May 2022. How would this affect the entries?</p>
-        <button 
-          onClick={() => setShow(!show)}
-          className="text-blue-500 font-bold flex items-center gap-1 hover:underline"
-        >
-          {show ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          {show ? "Hide Answer" : "See Answer"}
-        </button>
+    <style>
+        /* Custom T-Account Styling */
+        .t-account {
+            border-top: 2px solid #1f2937;
+            position: relative;
+            margin-top: 10px;
+        }
+        .t-account::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            border-left: 2px solid #1f2937;
+            transform: translateX(-50%);
+        }
+        .handwritten {
+            font-family: 'Courier New', Courier, monospace;
+        }
         
-        {show && (
-          <div className="mt-4 p-4 rounded bg-slate-100 dark:bg-slate-900 border-l-4 border-green-500 animate-in slide-in-from-top-2">
-            <p className="text-sm">The recovery would be <strong>credited</strong> to the Allowance for Doubtful Accounts account. This would reduce the amount of additional bad debts expense needed to be transferred to the Profit and Loss at year-end.</p>
-          </div>
-        )}
-      </Card>
-    </div>
-  );
-};
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-// --- TAB 3: QUIZ ---
+        .correct-input {
+            border-color: #22c55e !important;
+            background-color: #f0fdf4 !important;
+        }
+        
+        .incorrect-input {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
 
-const QuizRoom = ({ darkMode }) => {
-  const [selected, setSelected] = useState(null);
-  const correct = 1;
-  
-  return (
-    <div className="animate-in fade-in duration-500">
-      <Card darkMode={darkMode}>
-        <h3 className="text-lg font-bold mb-4">Quick Test: Recovery Logic</h3>
-        <p className="mb-6">When a previously written-off debt is recovered, it is credited to which account in the Maggie Chan example?</p>
-        <div className="space-y-3">
-          {["Trade Receivables", "Allowance for Doubtful Accounts", "Bank"].map((opt, i) => (
-            <button
-              key={i}
-              onClick={() => setSelected(i)}
-              className={`w-full text-left p-3 rounded-lg border transition-all ${
-                selected === i 
-                  ? (i === correct ? 'bg-green-100 border-green-500 text-green-800' : 'bg-red-100 border-red-500 text-red-800')
-                  : 'bg-slate-50 dark:bg-slate-700 border-transparent hover:border-blue-500'
-              }`}
-            >
-              {opt} {selected === i && (i === correct ? '✓' : '✗')}
-            </button>
-          ))}
-        </div>
-        {selected === correct && (
-          <p className="mt-4 text-sm text-green-600 font-medium flex items-center gap-1">
-            <CheckCircle size={16} /> Correct! It offsets the bad debt expense.
-          </p>
-        )}
-      </Card>
-    </div>
-  );
-};
-
-// --- MAIN APP COMPONENT ---
-
-export default function App() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [tab, setTab] = useState('study');
-
-  return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
-      <header className={`p-4 sticky top-0 z-10 border-b backdrop-blur-md ${darkMode ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-slate-200'}`}>
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="bg-blue-600 p-1.5 rounded-lg shadow-lg shadow-blue-500/20">
-              <GraduationCap className="text-white" size={20} />
+    <!-- Navigation -->
+    <nav class="bg-indigo-700 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="book-open" class="h-6 w-6"></i>
+                <span class="text-xl font-bold">Accrual Study: Bad Debts</span>
             </div>
-            <h1 className="text-xl font-bold hidden sm:block">HKDSE Accounting</h1>
-          </div>
-          
-          <nav className="flex gap-1 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
-            {['study', 'practice', 'quiz'].map((t) => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-bold capitalize transition-all ${
-                  tab === t 
-                  ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </nav>
-
-          <button 
-            onClick={() => setDarkMode(!darkMode)} 
-            className={`p-2 rounded-full transition-colors ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
+            <div class="flex space-x-1 sm:space-x-4">
+                <button onclick="switchTab('concepts')" id="nav-concepts" class="px-4 py-2 rounded-lg bg-indigo-800 hover:bg-indigo-600 transition font-medium">Concepts</button>
+                <button onclick="switchTab('examples')" id="nav-examples" class="px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-medium">Examples</button>
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-medium">Dr/Cr Quiz</button>
+            </div>
         </div>
-      </header>
+    </nav>
 
-      <main className="max-w-4xl mx-auto p-6">
-        {tab === 'study' && <StudyRoom darkMode={darkMode} />}
-        {tab === 'practice' && <PracticeRoom darkMode={darkMode} />}
-        {tab === 'quiz' && <QuizRoom darkMode={darkMode} />}
-      </main>
+    <!-- Main Content -->
+    <main id="app-content" class="max-w-5xl mx-auto p-4 md:p-6 pb-20">
+        <!-- Content injected via JS -->
+    </main>
 
-      <footer className="text-center py-12 opacity-40 text-xs font-medium tracking-widest uppercase">
-        HKDSE Accounting Companion • Chapter 10
-      </footer>
-    </div>
-  );
-}
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA ---
+
+        const concepts = [
+            {
+                title: "Bad Debts (Irrecoverable)",
+                icon: "file-warning",
+                desc: "Debts that are definitely uncollectible (e.g., customer bankruptcy). They are written off immediately.",
+                keyPoints: [
+                    "Expenses Increase (Dr)",
+                    "Assets (Receivables) Decrease (Cr)",
+                    "Reduces Net Profit"
+                ]
+            },
+            {
+                title: "Allowance for Doubtful Accounts",
+                icon: "piggy-bank",
+                desc: "An estimate of future bad debts based on the Prudence Concept. We anticipate losses before they occur.",
+                keyPoints: [
+                    "Contra-Asset Account (Reduces Asset value)",
+                    "Created to match revenue with likely expenses (Matching Principle)",
+                    "Does not involve cash flow"
+                ]
+            },
+            {
+                title: "Recovery of Bad Debts",
+                icon: "undo-2",
+                desc: "When a customer pays AFTER we already wrote off their debt. We must reverse the write-off first.",
+                keyPoints: [
+                    "Reinstating the receivable",
+                    "Recording the cash receipt",
+                    "Increases Net Profit"
+                ]
+            }
+        ];
+
+        const examples = [
+            {
+                id: 'ex1',
+                title: "Writing off a Bad Debt",
+                scenario: "A customer, Mr. Lee, owes $6,000. He is declared bankrupt and cannot pay. We must write off the debt.",
+                impact: {
+                    profit: "Net Profit ↓",
+                    assets: "Assets (Receivables) ↓",
+                    equity: "Capital ↓"
+                },
+                journal: [
+                    { dr: "Bad Debts Expense", cr: "", amt: "6,000" },
+                    { dr: "", cr: "Trade Receivables (Mr. Lee)", amt: "6,000" }
+                ],
+                tAccounts: [
+                    { 
+                        name: "Bad Debts (Expense)", 
+                        left: [{ desc: "Trade Receivables", amt: 6000 }], 
+                        right: [{ desc: "Profit & Loss", amt: 6000 }] 
+                    },
+                    { 
+                        name: "Trade Receivables", 
+                        left: [{ desc: "Balance b/d", amt: 6000 }], 
+                        right: [{ desc: "Bad Debts", amt: 6000 }] 
+                    }
+                ],
+                fs: {
+                    income: [
+                        { label: "Expenses:", isHeader: true },
+                        { label: "Bad Debts", val: "6,000" }
+                    ],
+                    sofp: [
+                        { label: "Current Assets:", isHeader: true },
+                        { label: "Trade Receivables", val: "0" }
+                    ]
+                }
+            },
+            {
+                id: 'ex2',
+                title: "Creating Allowance (Year End)",
+                scenario: "Maggie Chan has Trade Receivables of $90,000 at year end 2024. She decides to create an allowance of 5% ($4,500).",
+                impact: {
+                    profit: "Net Profit ↓ (Expense increases)",
+                    assets: "Net Realisable Value ↓",
+                    equity: "Capital ↓"
+                },
+                journal: [
+                    { dr: "Profit & Loss (Bad Debts Exp)", cr: "", amt: "4,500" },
+                    { dr: "", cr: "Allowance for Doubtful Accounts", amt: "4,500" }
+                ],
+                tAccounts: [
+                    { 
+                        name: "Bad Debts Expense", 
+                        left: [{ desc: "Allowance for D.A.", amt: 4500 }], 
+                        right: [{ desc: "Profit & Loss", amt: 4500 }] 
+                    },
+                    { 
+                        name: "Allowance for Doubtful Accounts", 
+                        left: [{ desc: "Balance c/d", amt: 4500 }], 
+                        right: [{ desc: "Bad Debts (P&L)", amt: 4500 }] 
+                    }
+                ],
+                fs: {
+                    income: [
+                        { label: "Expenses:", isHeader: true },
+                        { label: "Increase in Allowance", val: "4,500" }
+                    ],
+                    sofp: [
+                        { label: "Current Assets:", isHeader: true },
+                        { label: "Trade Receivables", val: "90,000" },
+                        { label: "Less: Allowance for D.A.", val: "(4,500)" },
+                        { label: "Net Receivables", val: "85,500", isTotal: true }
+                    ]
+                }
+            },
+            {
+                id: 'ex3',
+                title: "Recovery of Written-off Debt",
+                scenario: "A debt of $2,200 previously written off was unexpectedly recovered and paid by cheque.",
+                impact: {
+                    profit: "Net Profit ↑",
+                    assets: "Cash ↑",
+                    equity: "Capital ↑"
+                },
+                journal: [
+                    { dr: "Trade Receivables", cr: "", amt: "2,200", note: "(1) Reinstate debt" },
+                    { dr: "", cr: "Bad Debts Recovered", amt: "2,200" },
+                    { dr: "Bank", cr: "", amt: "2,200", note: "(2) Receive money" },
+                    { dr: "", cr: "Trade Receivables", amt: "2,200" }
+                ],
+                tAccounts: [
+                    { 
+                        name: "Trade Receivables", 
+                        left: [{ desc: "Bad Debts Recovered", amt: 2200 }], 
+                        right: [{ desc: "Bank", amt: 2200 }] 
+                    },
+                    { 
+                        name: "Bad Debts Recovered (Income)", 
+                        left: [{ desc: "Profit & Loss", amt: 2200 }], 
+                        right: [{ desc: "Trade Receivables", amt: 2200 }] 
+                    }
+                ],
+                fs: {
+                    income: [
+                        { label: "Other Income:", isHeader: true },
+                        { label: "Bad Debts Recovered", val: "2,200" }
+                    ],
+                    sofp: [
+                        { label: "Current Assets:", isHeader: true },
+                        { label: "Bank balance increased by", val: "2,200" }
+                    ]
+                }
+            }
+        ];
+
+        const quizData = [
+            {
+                question: "Transaction: Written off a debtor, Mr. Wong, who owes $1,500.",
+                correct: [
+                    { type: 'dr', account: ['Bad Debts', 'Bad Debts Expense'], amount: 1500 },
+                    { type: 'cr', account: ['Trade Receivables', 'Mr Wong', 'Mr. Wong'], amount: 1500 }
+                ]
+            },
+            {
+                question: "Transaction: Increase the Allowance for Doubtful Accounts by $400 at year end.",
+                correct: [
+                    { type: 'dr', account: ['Profit and Loss', 'Bad Debts Expense', 'Income Statement'], amount: 400 },
+                    { type: 'cr', account: ['Allowance for Doubtful Accounts', 'Allowance for bad debts'], amount: 400 }
+                ]
+            },
+            {
+                question: "Transaction: Receive cash $500 for a debt written off last year (Step 1: Reinstating entry only).",
+                correct: [
+                    { type: 'dr', account: ['Trade Receivables', 'Debtor'], amount: 500 },
+                    { type: 'cr', account: ['Bad Debts Recovered', 'Bad Debts'], amount: 500 }
+                ]
+            }
+        ];
+
+        // --- STATE ---
+        let currentTab = 'concepts';
+        let currentExampleIndex = 0;
+
+        // --- RENDER FUNCTIONS ---
+
+        function init() {
+            lucide.createIcons();
+            render();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            // Update UI buttons
+            ['concepts', 'examples', 'quiz'].forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                if(t === tab) {
+                    btn.classList.add('bg-indigo-800');
+                } else {
+                    btn.classList.remove('bg-indigo-800');
+                }
+            });
+            render();
+        }
+
+        function render() {
+            const container = document.getElementById('app-content');
+            container.innerHTML = '';
+
+            if (currentTab === 'concepts') renderConcepts(container);
+            else if (currentTab === 'examples') renderExamples(container);
+            else if (currentTab === 'quiz') renderQuiz(container);
+
+            lucide.createIcons();
+        }
+
+        function renderConcepts(container) {
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in';
+            
+            concepts.forEach(c => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-indigo-500 hover:shadow-lg transition">
+                        <div class="flex items-center space-x-3 mb-4 text-indigo-700">
+                            <i data-lucide="${c.icon}" class="w-8 h-8"></i>
+                            <h3 class="text-xl font-bold">${c.title}</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 h-20">${c.desc}</p>
+                        <div class="bg-gray-100 p-3 rounded-lg text-sm">
+                            <p class="font-semibold text-gray-700 mb-2">Effects:</p>
+                            <ul class="space-y-1">
+                                ${c.keyPoints.map(k => `<li class="flex items-start"><span class="mr-2 text-indigo-500">•</span>${k}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+            container.appendChild(grid);
+        }
+
+        function renderExamples(container) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'fade-in space-y-6';
+
+            // Example Selector Tabs
+            const tabContainer = document.createElement('div');
+            tabContainer.className = 'flex flex-wrap gap-2 mb-6';
+            examples.forEach((ex, idx) => {
+                const active = idx === currentExampleIndex ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border';
+                tabContainer.innerHTML += `
+                    <button onclick="setExample(${idx})" class="px-4 py-2 rounded-full text-sm font-semibold transition ${active}">
+                        ${ex.title}
+                    </button>
+                `;
+            });
+            wrapper.appendChild(tabContainer);
+
+            const ex = examples[currentExampleIndex];
+
+            // Scenario Box
+            wrapper.innerHTML += `
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <h3 class="font-bold text-blue-900 text-lg mb-2 flex items-center">
+                        <i data-lucide="info" class="w-5 h-5 mr-2"></i> Scenario
+                    </h3>
+                    <p class="text-blue-800">${ex.scenario}</p>
+                    <div class="mt-3 flex gap-4 text-sm font-mono text-blue-700">
+                        ${Object.entries(ex.impact).map(([k, v]) => 
+                            `<span class="px-2 py-1 bg-white rounded border border-blue-100 shadow-sm">${v}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Content Grid (Journal | T-Accounts | Financial Statements)
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
+
+            // Left Col: Journal & T-Accounts
+            const leftCol = document.createElement('div');
+            leftCol.className = 'space-y-6';
+
+            // Journal
+            let journalHtml = `
+                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                    <h4 class="font-bold text-gray-700 mb-3 border-b pb-2">General Journal</h4>
+                    <table class="w-full text-sm font-mono">
+                        <thead>
+                            <tr class="text-left text-gray-500 text-xs uppercase tracking-wider">
+                                <th class="pb-2">Account Details</th>
+                                <th class="pb-2 text-right">Dr ($)</th>
+                                <th class="pb-2 text-right">Cr ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+            `;
+            ex.journal.forEach(row => {
+                journalHtml += `
+                    <tr>
+                        <td class="py-2 ${row.cr ? 'pl-8' : ''} ${row.note ? 'text-gray-400 italic' : ''}">
+                            ${row.dr || row.cr} ${row.note ? '<br><span class="text-xs">'+row.note+'</span>' : ''}
+                        </td>
+                        <td class="py-2 text-right font-bold text-gray-800">${row.dr ? row.amt : ''}</td>
+                        <td class="py-2 text-right font-bold text-gray-800">${row.cr ? row.amt : ''}</td>
+                    </tr>
+                `;
+            });
+            journalHtml += `</tbody></table></div>`;
+            leftCol.innerHTML += journalHtml;
+
+            // T-Accounts
+            ex.tAccounts.forEach(acc => {
+                let leftRows = acc.left.map(i => `<div class="flex justify-between"><span>${i.desc}</span><span>${i.amt}</span></div>`).join('');
+                let rightRows = acc.right.map(i => `<div class="flex justify-between"><span>${i.desc}</span><span>${i.amt}</span></div>`).join('');
+                
+                leftCol.innerHTML += `
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-center font-bold text-lg mb-1">${acc.name}</div>
+                        <div class="t-account flex text-sm handwritten">
+                            <div class="w-1/2 p-2 border-r border-gray-800">
+                                <div class="text-xs text-gray-400 mb-1">Dr</div>
+                                ${leftRows}
+                            </div>
+                            <div class="w-1/2 p-2">
+                                <div class="text-xs text-gray-400 mb-1 text-right">Cr</div>
+                                ${rightRows}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.appendChild(leftCol);
+
+            // Right Col: Financial Statements
+            const rightCol = document.createElement('div');
+            rightCol.className = 'space-y-6';
+
+            // Income Statement
+            let isHtml = `
+                <div class="bg-yellow-50 p-5 rounded-lg shadow border border-yellow-200">
+                    <h4 class="font-bold text-yellow-900 text-center mb-4 text-sm border-b border-yellow-200 pb-2">
+                        Income Statement (Extract)
+                        <br><span class="font-normal text-xs">For the year ended 31 Dec 2024</span>
+                    </h4>
+                    <div class="text-sm font-mono space-y-2">
+            `;
+            ex.fs.income.forEach(row => {
+                isHtml += `
+                    <div class="flex justify-between ${row.isHeader ? 'font-bold text-gray-800 mt-3' : 'text-gray-700'}">
+                        <span>${row.label}</span>
+                        <span>${row.val || ''}</span>
+                    </div>
+                `;
+            });
+            isHtml += `</div></div>`;
+            rightCol.innerHTML += isHtml;
+
+            // SOFP
+            let sofpHtml = `
+                <div class="bg-emerald-50 p-5 rounded-lg shadow border border-emerald-200">
+                    <h4 class="font-bold text-emerald-900 text-center mb-4 text-sm border-b border-emerald-200 pb-2">
+                        Statement of Financial Position (Extract)
+                        <br><span class="font-normal text-xs">As at 31 Dec 2024</span>
+                    </h4>
+                    <div class="text-sm font-mono space-y-2">
+            `;
+            ex.fs.sofp.forEach(row => {
+                const borderClass = row.isTotal ? 'border-t border-gray-400 pt-1 font-bold' : '';
+                sofpHtml += `
+                    <div class="flex justify-between ${row.isHeader ? 'font-bold text-gray-800 mt-3' : 'text-gray-700'} ${borderClass}">
+                        <span>${row.label}</span>
+                        <span>${row.val || ''}</span>
+                    </div>
+                `;
+            });
+            sofpHtml += `</div></div>`;
+            rightCol.innerHTML += sofpHtml;
+
+            grid.appendChild(rightCol);
+            wrapper.appendChild(grid);
+            container.appendChild(wrapper);
+        }
+
+        function setExample(index) {
+            currentExampleIndex = index;
+            render();
+        }
+
+        function renderQuiz(container) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'max-w-3xl mx-auto fade-in';
+
+            wrapper.innerHTML = `
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-indigo-100">
+                    <div class="flex items-center space-x-3 mb-6 border-b pb-4">
+                        <i data-lucide="edit-3" class="text-indigo-600 w-6 h-6"></i>
+                        <h2 class="text-2xl font-bold text-gray-800">Double Entry Drill</h2>
+                    </div>
+                    <div id="quiz-container" class="space-y-8"></div>
+                </div>
+            `;
+            
+            container.appendChild(wrapper);
+            const qContainer = document.getElementById('quiz-container');
+
+            quizData.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'bg-gray-50 p-4 rounded-lg';
+                qDiv.innerHTML = `
+                    <p class="font-semibold text-gray-700 mb-3 text-sm md:text-base">${idx + 1}. ${q.question}</p>
+                    <div class="grid grid-cols-12 gap-2 text-sm font-mono items-center mb-2">
+                         <div class="col-span-6 text-xs text-gray-400 uppercase">Account Name</div>
+                         <div class="col-span-3 text-right text-xs text-gray-400 uppercase">Dr ($)</div>
+                         <div class="col-span-3 text-right text-xs text-gray-400 uppercase">Cr ($)</div>
+                    </div>
+                    
+                    <!-- Dr Row -->
+                    <div class="grid grid-cols-12 gap-2 mb-2 items-center">
+                        <input type="text" id="q${idx}-dr-name" placeholder="Dr Account..." class="col-span-6 p-2 border rounded focus:ring-2 focus:ring-indigo-300 outline-none">
+                        <input type="number" id="q${idx}-dr-amt" placeholder="0" class="col-span-3 p-2 border rounded text-right focus:ring-2 focus:ring-indigo-300 outline-none">
+                        <div class="col-span-3 bg-gray-200 rounded h-full"></div>
+                    </div>
+
+                    <!-- Cr Row -->
+                    <div class="grid grid-cols-12 gap-2 mb-4 items-center">
+                        <input type="text" id="q${idx}-cr-name" placeholder="Cr Account..." class="col-span-6 pl-6 p-2 border rounded focus:ring-2 focus:ring-indigo-300 outline-none">
+                        <div class="col-span-3 bg-gray-200 rounded h-full"></div>
+                        <input type="number" id="q${idx}-cr-amt" placeholder="0" class="col-span-3 p-2 border rounded text-right focus:ring-2 focus:ring-indigo-300 outline-none">
+                    </div>
+
+                    <button onclick="checkAnswer(${idx})" class="text-sm bg-indigo-600 text-white px-4 py-1.5 rounded hover:bg-indigo-700 transition">Check</button>
+                    <div id="feedback-${idx}" class="mt-2 text-sm hidden"></div>
+                `;
+                qContainer.appendChild(qDiv);
+            });
+        }
+
+        function checkAnswer(idx) {
+            const q = quizData[idx];
+            
+            // Get inputs
+            const drNameIn = document.getElementById(`q${idx}-dr-name`);
+            const drAmtIn = document.getElementById(`q${idx}-dr-amt`);
+            const crNameIn = document.getElementById(`q${idx}-cr-name`);
+            const crAmtIn = document.getElementById(`q${idx}-cr-amt`);
+            const feedback = document.getElementById(`feedback-${idx}`);
+
+            // Logic to clean strings
+            const clean = (str) => str.toLowerCase().trim();
+            const drCorrect = q.correct.find(x => x.type === 'dr');
+            const crCorrect = q.correct.find(x => x.type === 'cr');
+
+            // Validation
+            let isDrNameCorrect = drCorrect.account.map(clean).includes(clean(drNameIn.value));
+            let isDrAmtCorrect = parseInt(drAmtIn.value) === drCorrect.amount;
+            
+            let isCrNameCorrect = crCorrect.account.map(clean).includes(clean(crNameIn.value));
+            let isCrAmtCorrect = parseInt(crAmtIn.value) === crCorrect.amount;
+
+            // Visual Feedback
+            drNameIn.classList.toggle('correct-input', isDrNameCorrect);
+            drNameIn.classList.toggle('incorrect-input', !isDrNameCorrect);
+            drAmtIn.classList.toggle('correct-input', isDrAmtCorrect);
+            drAmtIn.classList.toggle('incorrect-input', !isDrAmtCorrect);
+
+            crNameIn.classList.toggle('correct-input', isCrNameCorrect);
+            crNameIn.classList.toggle('incorrect-input', !isCrNameCorrect);
+            crAmtIn.classList.toggle('correct-input', isCrAmtCorrect);
+            crAmtIn.classList.toggle('incorrect-input', !isCrAmtCorrect);
+
+            if (isDrNameCorrect && isDrAmtCorrect && isCrNameCorrect && isCrAmtCorrect) {
+                feedback.innerHTML = `<span class="text-green-600 font-bold flex items-center"><i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Correct! Well done.</span>`;
+            } else {
+                feedback.innerHTML = `<span class="text-red-600 font-bold flex items-center"><i data-lucide="x-circle" class="w-4 h-4 mr-1"></i> Incorrect. Try again.</span>`;
+            }
+            feedback.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Initialize App
+        window.onload = init;
+
+    </script>
+</body>
+</html>
